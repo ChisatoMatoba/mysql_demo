@@ -3,10 +3,10 @@ version: '3'
 services:
   mysql:
     image: mysql:8.0
-    container_name: mysql_deadlock_demo
+    container_name: mysql_demo
     environment:
       MYSQL_ROOT_PASSWORD: rootpass
-      MYSQL_DATABASE: deadlock_demo
+      MYSQL_DATABASE: mysql_demo
       MYSQL_USER: demouser
       MYSQL_PASSWORD: demopass
     ports:

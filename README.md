@@ -30,23 +30,34 @@ docker compose ps
 
 ```bash
 # demouserとして接続
-docker exec -it mysql_deadlock_demo mysql -u demouser -pdemopass deadlock_demo
-
+docker exec -it mysql_demo mysql -u demouser -pdemopass mysql_demo
 # rootユーザーとして接続
-docker exec -it mysql_deadlock_demo mysql -u root -prootpass deadlock_demo
+docker exec -it mysql_demo mysql -u root -prootpass mysql_demo
 ```
 
-## デッドロック検証方法(例)
-
-### テストデータの準備
+## テストデータの準備
 
 ```sql
 -- テストデータ追加
-INSERT INTO users (name, email) VALUES ('ユーザー1', 'user1@example.com');
-INSERT INTO organizations (name, code) VALUES ('組織1', 'ORG001');
-INSERT INTO organization_users (organization_id, user_id, name, code, is_primary) 
-VALUES (1, 1, 'ユーザー1（組織1）', 'USER001', true);
+INSERT INTO users (id, name, email) VALUES
+(1, 'Alice', 'alice@example.com'),
+(3, 'Bob', 'bob@example.com'),
+(5, 'Charlie', 'charlie@example.com');
+
+INSERT INTO organizations (id, name, code) VALUES
+(10, 'Org A', 'A001'),
+(20, 'Org B', 'B002'),
+(30, 'Org C', 'C005');
+
+INSERT INTO organization_users (id, organization_id, user_id, name, code, is_primary) VALUES
+(100, 10, 1, 'Alpha', 'X001', TRUE),
+(105, 10, 3, 'Beta', 'X002', FALSE),
+(110, 20, 3, 'Gamma', 'X005', TRUE),
+(120, 30, 1, 'Delta', 'X007', TRUE),
+(130, 30, 5, 'Zeta', 'X010', FALSE);
 ```
+
+## デッドロック検証方法(例)
 
 ### デッドロック発生手順
 
@@ -54,20 +65,12 @@ VALUES (1, 1, 'ユーザー1（組織1）', 'USER001', true);
 
 2. ターミナル1で実行:
 ```sql
-START TRANSACTION;
-UPDATE organization_users SET name = 'Updated Name 1' WHERE user_id = 1;
--- 少し待つ
-UPDATE organizations SET name = 'Updated Org 1' WHERE id = 1;
-COMMIT;
+(WIP)
 ```
 
 3. ターミナル2で実行:
 ```sql
-START TRANSACTION;
-UPDATE organizations SET name = 'Updated Org 2' WHERE id = 1;
--- 少し待つ
-UPDATE organization_users SET name = 'Updated Name 2' WHERE user_id = 1;
-COMMIT;
+(WIP)
 ```
 
 ### デッドロック情報の確認
