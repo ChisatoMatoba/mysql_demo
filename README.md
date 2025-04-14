@@ -49,7 +49,7 @@ INSERT INTO organizations (id, name, code) VALUES
 (20, 'Org B', 'B002'),
 (30, 'Org C', 'C005');
 
-INSERT INTO organization_users (id, organization_id, user_id, name, code, is_primary) VALUES
+INSERT INTO organization_users (id, organization_id, user_id, name, code, inactive) VALUES
 (100, 10, 1, 'Alpha', 'X001', TRUE),
 (105, 10, 3, 'Beta', 'X002', FALSE),
 (110, 20, 3, 'Gamma', 'X005', TRUE),

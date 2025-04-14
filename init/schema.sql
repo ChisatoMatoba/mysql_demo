@@ -28,7 +28,7 @@ CREATE TABLE organization_users (
   user_id INT NOT NULL,
   name VARCHAR(255),
   code VARCHAR(50),
-  is_primary BOOLEAN DEFAULT FALSE,
+  inactive BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
@@ -36,8 +36,8 @@ CREATE TABLE organization_users (
   FOREIGN KEY (organization_id) REFERENCES organizations(id),
   FOREIGN KEY (user_id) REFERENCES users(id),
 
-  -- 一意インデックス (organization_id, user_id, is_primary)
-  UNIQUE INDEX idx_org_user_primary (organization_id, user_id, is_primary),
+  -- 一意インデックス (organization_id, user_id, inactive)
+  UNIQUE INDEX idx_org_user_inactive (organization_id, user_id, inactive),
 
   -- nameのインデックス
   INDEX idx_name (name),
