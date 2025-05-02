@@ -1,4 +1,4 @@
-# MySQL デッドロック検証環境
+# MySQL ロック状態検証環境
 
 このプロジェクトはMySQLでの動作を検証するためのデモ環境です。
 
@@ -9,12 +9,38 @@
   - User
   - Organization
   - OrganizationUser (中間テーブル)
+- ER図
+  ```mermaid
+  erDiagram
+    users {
+      INT id PK
+      VARCHAR name
+      VARCHAR email（UNIQUE）
+    }
+    organizations {
+      INT id PK
+      VARCHAR name
+      VARCHAR code（UNIQUE）
+    }
+    organization_users {
+      INT id PK
+      INT organization_id FK
+      INT user_id FK
+      VARCHAR name
+      VARCHAR code（UNIQUE）
+      BOOLEAN inactive
+      *composite_key organization_id--user_id--inactive
+    }
+
+    users ||--o{ organization_users : has
+    organizations ||--o{ organization_users : has
+  ```
 
 ## セットアップ手順
 
 ### 環境の起動
 
-最新のDockerでは `docker compose` コマンド（スペース区切り）を使用します:
+`Docker Desktop`を起動させ、以下を実行します:
 
 ```bash
 # コンテナの起動
@@ -36,7 +62,7 @@ docker exec -it mysql_demo mysql -u root -prootpass mysql_demo
 ```
 
 ## テストデータの準備
-
+これは例です:
 ```sql
 -- テストデータ追加
 INSERT INTO users (id, name, email) VALUES
@@ -57,25 +83,9 @@ INSERT INTO organization_users (id, organization_id, user_id, name, code, inacti
 (130, 30, 5, 'Zeta', 'X010', FALSE);
 ```
 
-## デッドロック検証方法(例)
+### ロック情報の確認
 
-### デッドロック発生手順
-
-1. 2つの異なるターミナルウィンドウを開き、それぞれでMySQLに接続します
-
-2. ターミナル1で実行:
-```sql
-(WIP)
-```
-
-3. ターミナル2で実行:
-```sql
-(WIP)
-```
-
-### デッドロック情報の確認
-
-デッドロック発生時に以下のコマンドでロック情報を確認できます:
+ロック発生時に以下のコマンドでロック情報を確認できます:
 
 ```sql
 -- ロック情報の確認
